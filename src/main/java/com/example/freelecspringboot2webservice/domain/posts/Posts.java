@@ -1,5 +1,6 @@
 package com.example.freelecspringboot2webservice.domain.posts;
 
+import com.example.freelecspringboot2webservice.domain.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import org.springframework.data.annotation.Id;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Posts {
+public class Posts extends BaseTimeEntity {
 
     @jakarta.persistence.Id
     @Id
