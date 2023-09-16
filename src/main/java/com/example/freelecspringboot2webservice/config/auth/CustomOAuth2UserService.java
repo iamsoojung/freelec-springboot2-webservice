@@ -2,9 +2,8 @@ package com.example.freelecspringboot2webservice.config.auth;
 
 import com.example.freelecspringboot2webservice.config.auth.dto.OAuthAttributes;
 import com.example.freelecspringboot2webservice.config.auth.dto.SessionUser;
-import com.example.freelecspringboot2webservice.domain.user.User;
+import com.example.freelecspringboot2webservice.domain.user.Users;
 import com.example.freelecspringboot2webservice.domain.user.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -15,6 +14,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.Collections;
 
 @RequiredArgsConstructor
@@ -50,18 +50,18 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                                 oAuth2User
                                         .getAttributes());
 
-        User user = saveOrUpdate(attributes);
+        Users users = saveOrUpdate(attributes);
 
-        httpSession.setAttribute("user", new SessionUser(user));
+        httpSession.setAttribute("users", new SessionUser(users));
 
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
+                Collections.singleton(new SimpleGrantedAuthority(users.getRoleKey())),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey());
     }
 
-    private User saveOrUpdate(OAuthAttributes attributes){
-        User user = userRepository.findByEmail(attributes.getEmail())
+    private Users saveOrUpdate(OAuthAttributes attributes){
+        Users user = userRepository.findByEmail(attributes.getEmail())
                 .map(entity -> entity.update(
                         attributes.getName(),
                         attributes.getPicture()))
@@ -69,4 +69,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         return userRepository.save(user);
     }
+
+
 }
